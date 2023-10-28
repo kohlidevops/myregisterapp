@@ -103,6 +103,25 @@ Configure GitHub credentials in Jenkins
 	password - GitHub Personal Access Token - which was created in last step
 	ID - github
 	create a credential
+
+ Create a GitHub repo with below sample app
+
+	https://github.com/kohlidevops/myregisterapp
+	Create a MyJenkinsFile for GitHub checkout, Maven Build and Test and save it.
+
+ Create a new job with pipeline for my-app
+
+ To open a job and select the Pipeline section
+
+	Definition - Pipeline script from SCM
+	SCM - Git
+	Repository URL - https://github.com/kohlidevops/myregisterapp
+	Credentilas - Select your credentials which was created in last step
+	Branch specifier - */master
+	Script path - MyJenkinsFile
+	Apply - Save
+	Test the Build
+ 
        
  	
 
