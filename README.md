@@ -153,6 +153,14 @@ Navigate to My Account -> Security -> Generate a new token
 
 ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/78d8555b-15ea-4118-b2c2-70cceb709b4b)
 
+## Configure sonarqube webhook for Quality Status Code check
+
+Navigate to Administration -> Configuration -> Webhooks -> Create new
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/b4109dcd-beb1-4549-9f31-2f53f9e80b89)
+
+	Note: http://<Jenkins-Public-IP>:8080/sonarqube-webhook/
+ 
 ## Configure sonarqube token in Jenkins
 
 Jenkins -> Manage Jenkins -> Credentials -> System -> Global credentials -> Add new
