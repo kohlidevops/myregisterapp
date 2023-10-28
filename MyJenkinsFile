@@ -20,18 +20,18 @@ environment {
                 }
         }
 
-        stage("Checkout from SCM"){
+        stage("Git Checkout"){
                 steps {
                     git branch: 'master', credentialsId: 'github', url: 'https://github.com/kohlidevops/myregisterapp'
                 }
         }
 
-        stage("Build Application"){
+        stage("Maven - Build Application"){
             steps {
                 sh "mvn clean package"
             }
        }
-       stage("Test Application"){
+       stage("Maven - Test Application"){
            steps {
                  sh "mvn test"
            }
@@ -45,7 +45,7 @@ environment {
 	           }	
            }
        }
-     stage("Quality Gate"){
+     stage("Quality Gate Status"){
            steps {
                script {
                     waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
@@ -67,14 +67,14 @@ environment {
                 }
             }
        }
-	stage("Trivy Scan") {
+	stage("Trivy Scanning - Docker Image") {
            steps {
                script {
 	            sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image latchudevops/myapp-pipeline:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
                }
            }
        }
-    stage ('Cleanup Artifacts') {
+    stage ('Cleanup Docker Image Artifacts') {
            steps {
                script {
                     sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
