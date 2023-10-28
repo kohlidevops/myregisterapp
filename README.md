@@ -74,5 +74,29 @@ save and check the Jenkins-Agent logs in Jenkins console - Should be connected.
 
 To create a Test Jenkins pipeline with Hello world script to validate whether job is running without fail.
 
+Install plugins in Jenkins
+
+ 	Maven Integration
+  	Pipeline Maven Integration
+   	Eclipse Temurin installer
+
+Configure Java and Maven in Tools
+
+ 	JDK Installations
+	Name -  Java17
+ 	Install automatically - Install from adoptium.net - Version - jdk-17.0.5+8
+
+	Maven Installations
+   	Name - Maven3
+    	Install automatically - Version - 3.9.4
+
+Create a Personal Access Token in GitHub that is your source code repository
+
+ 	Settings - Developer settings - Tokens(Classic) - Generate new token
+
+Configure GitHub credentials in Jenkins
+
+ 	
+
 
 
