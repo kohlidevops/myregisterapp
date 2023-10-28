@@ -31,8 +31,8 @@
     <p>Already have an account? <a href="#">Sign in</a>.</p>
   </div>
 
-   <h1> Thank You </h1>
+   <h1> Hello Latchu! Depoyment using CICD with Jenkins - ArgoCD on Kubernetes</h1>
    <br>
-   <h1> Hello Latchu. </h1>
+   <h1> Thanks. </h1>
    
 </form>
