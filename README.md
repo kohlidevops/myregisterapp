@@ -127,99 +127,84 @@ To create a Test Jenkins pipeline with Hello world script to validate whether jo
 
  ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/43cdc823-1db5-411a-ac8d-5662d4a6f7e9)
 
-Launch EC2 Ubuntu22 with T3.Medium and Install and configure Sonarqube
+## Launch EC2 Ubuntu22 with T3.Medium and run a docker container for Sonarqube
 
-## Update Package Repository and Upgrade Packages
-    $ sudo apt update
-    $ sudo apt upgrade
-## Add PostgresSQL repository
-    $ sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-    $ wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
-## Install PostgreSQL
-    $ sudo apt update
-    $ sudo apt-get -y install postgresql postgresql-contrib
-    $ sudo systemctl enable postgresql
-## Create Database for Sonarqube
-    $ sudo passwd postgres
-    $ su - postgres
-    $ createuser sonar
-    $ psql 
-    $ ALTER USER sonar WITH ENCRYPTED password 'sonar';
-    $ CREATE DATABASE sonarqube OWNER sonar;
-    $ grant all privileges on DATABASE sonarqube to sonar;
-    $ \q
-    $ exit
-## Add Adoptium repository
-    $ sudo bash
-    $ wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
-    $ echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
- ## Install Java 17
-    $ apt update
-    $ apt install temurin-17-jdk
- ## If any issues with above command then use below command to install temurin-17-jdk
-    $ sudo wget https://packages.adoptium.net/artifactory/deb/pool/main/t/temurin-17/temurin-17-jdk_17.0.9.0+9_amd64.deb
-    $ sudo dpkg -i temurin-17-jdk_17.0.9.0+9_amd64.deb
-    $ update-alternatives --config java
-    $ /usr/bin/java --version
-    $ exit 
-## Linux Kernel Tuning
-   # Increase Limits
-    $ sudo vim /etc/security/limits.conf
-    //Paste the below values at the bottom of the file
-    sonarqube   -   nofile   65536
-    sonarqube   -   nproc    4096
+## Install docker and start a container
+	
+ 	sudo apt-get install docker.io -y
+	sudo usermod -aG docker ubuntu
+	sudo chmod 777 /var/run/docker.sock
+	docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube
+	netstat -tnpl
+	docker ps -a
 
-    # Increase Mapped Memory Regions
-    sudo vim /etc/sysctl.conf
-    //Paste the below values at the bottom of the file
-    vm.max_map_count = 262144
+ ## Log in to sonarqube and create a token for a Jenkins
 
-#### Sonarqube Installation ####
-## Download and Extract
-    $ sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.0.65466.zip
-    $ sudo apt install unzip
-    $ sudo unzip sonarqube-9.9.0.65466.zip -d /opt
-    $ sudo mv /opt/sonarqube-9.9.0.65466 /opt/sonarqube
-## Create user and set permissions
-     $ sudo groupadd sonar
-     $ sudo useradd -c "user to run SonarQube" -d /opt/sonarqube -g sonar sonar
-     $ sudo chown sonar:sonar /opt/sonarqube -R
-## Update Sonarqube properties with DB credentials
-     $ sudo vim /opt/sonarqube/conf/sonar.properties
-     //Find and replace the below values, you might need to add the sonar.jdbc.url
-     sonar.jdbc.username=sonar
-     sonar.jdbc.password=sonar
-     sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
-## Create service for Sonarqube
-$ sudo vim /etc/systemd/system/sonar.service
-//Paste the below into the file
-     [Unit]
-     Description=SonarQube service
-     After=syslog.target network.target
+ By default, sonarqube
 
-     [Service]
-     Type=forking
+  	username - admin
+   	password - admin
 
-     ExecStart=/opt/sonarqube/bin/linux-x86-64/sonar.sh start
-     ExecStop=/opt/sonarqube/bin/linux-x86-64/sonar.sh stop
+Then you have to reset the password for sonarqube
 
-     User=sonar
-     Group=sonar
-     Restart=always
+## Generate a Sonarqube token
 
-     LimitNOFILE=65536
-     LimitNPROC=4096
+Navigate to My Account -> Security -> Generate a new token
 
-     [Install]
-     WantedBy=multi-user.target
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/78d8555b-15ea-4118-b2c2-70cceb709b4b)
 
-## Start Sonarqube and Enable service
-     $ sudo systemctl start sonar
-     $ sudo systemctl enable sonar
-     $ sudo systemctl status sonar
+## Configure sonarqube token in Jenkins
 
-## Watch log files and monitor for startup
-     $ sudo tail -f /opt/sonarqube/logs/sonar.log
+Jenkins -> Manage Jenkins -> Credentials -> System -> Global credentials -> Add new
+
+	Select - Secret Text
+	Secret - Place your token
+	ID - sonar-token
+	Desrciption - sonar-token
+ 	Create
+
+## Install sonarqube plugins in Jenkins
+
+Installed plugins are listed below
+
+	Sonarqube scanner for jenkins
+	Sonarqube Generic Coverage Plugin
+	Sonargraph Integration Jenkins plugins
+	Sonar Quality Gates plugins
+	Sonar Gerrit Plugin
+	Quality Gates Plugin
+
+ ## Configure Sonarqube installation on Jenkins Tools
+
+ Jenkins -> Manage Jenkins -> Tools
+
+	Select - Sonarqube Scanner Installations
+	Name - sonarqube-scanner
+	Select - Install automatically
+	Version - SonarQube Scanner 5.0.1.3006
+
+ ## Configure Sonarqube URL in Jenkins System
+
+ Jenkins -> Manage Jenkins -> System
+
+	Select - Sonarqube servers
+	Name - sonarqube-server
+	Server URL - http://<sonarqube-private-ip>:9000
+	Server authentication token - <sonar-token> //which was created just before in Jenkins Global credentials
+	Apply and save
+
+## Update the Jenkinsfile for Sonarqube analysis and Quality status check 
+
+	 https://github.com/kohlidevops/myregisterapp/blob/master/MyJenkinsFile
+
+## Start the build
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/15ea4fe7-4d2f-4e30-b285-0b8d831bf2f8)
+
+
+
+	
+ 
 
 
 
