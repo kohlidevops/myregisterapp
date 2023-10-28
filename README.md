@@ -487,5 +487,58 @@ Jenkins -> New Item with Pipeline
 
  The "IMAGE_TAG" value has been passed with the help of final stage of CI job and the Environment section. 
 
+## Check and Validate the CICD
 
+Do some changes in your application repository in GitHub and do manual build in CI job. I will not configure the GitSCM Polling in Jenkins CI job to Automate the CI Process once the Developer has been changed their code. (That's why Im doing manual build in CI job). I hope this GitSCM Polling and Jenkins webhook is not big deal for everyone.
+
+### After the CI build, below things will happen
+
+	CI Job - Workspace cleaning
+	CI Job - Tool installation
+	CI Job - GitHub Checkout (for myapp)
+	CI Job - Build Application
+	CI Job - Test Application
+	CI Job - Sonarqube Analysis
+	CI Job - Quality Gate Status
+	CI Job - Build Docker Image using Dockerfile
+	CI Job - Push Docker Image to DockerHub
+	CI Job - Scanning Docker ImageHub Image
+	CI Job - Triggering CD Job (Another Job for ArgoCD) - Here - I'm passing IMAGE_TAG, Jenkins admin username, ArgoCD job URL, JENKINS_API_TOKEN, and Jenkins Token for start build.
+
+### After the CD build, below things will happen
+
+	CD Job - Workspace cleaning
+	CD Job - GitHub Checkout (for Kubernetes repository)
+	CD Job - Docker Image Tag updation in Manifest Deployment Yaml file
+	CD Job - Deployment changes updated to Kubernetes Repository
+	CD Job - ArgoCD auto Pull the changes from repository
+	CD Job - ArgoCD deploy the changes to the kubernetes cluster
+
+### That's it.
+
+If I start the CI build, then its successfully completed.
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/db8fc798-a340-42c7-bc9b-e2d0252e257a)
+
+This build trigger the CD Job that is ArgoCD Pipeline with passing some parameters
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/5c2184cb-de76-4133-8717-3ca23fe022e8)
+
+My Docker Image - That is version 1.0.0-15 has been updated in Docker Hub
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/aa357729-8b45-49e9-86e8-115e68a4b092)
+
+Same Image has been update in the manifest file (deployment.yml) of the kubernetes repository
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/cc3f6653-6761-4720-9591-c1a64e823de2)
+
+My ArgoCD application has been updated successfully
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/c2383eae-e47d-4a5c-8846-ad7b254f2117)
+
+If I refresh my application, then it should get updated.
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/72211d59-bb64-49e7-8a0f-cf36a2247b84)
+
+## Cool!
 
