@@ -124,7 +124,7 @@ Configure GitHub credentials in Jenkins
 
  Perfect! My build has been completed.
 
- 	![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/43cdc823-1db5-411a-ac8d-5662d4a6f7e9)
+ ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/43cdc823-1db5-411a-ac8d-5662d4a6f7e9)
 
 
  
