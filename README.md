@@ -258,7 +258,48 @@ Perfect! My Jenkins job build has been succeded. Now, Our Continuous Integration
 
 ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/84ca2c1f-958b-45d9-a274-ad19b8cc382b)
 
+## Set up EKSCTL Bootstrap server
 
+## Install AWS Cli on the above EC2
+
+	$ sudo su
+	$ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+	$ apt install unzip,   $ unzip awscliv2.zip
+	$ sudo ./aws/install
+
+## Installing kubectl
+
+	$ sudo su
+ 	$ cd ~
+	$ curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/linux/amd64/kubectl
+	$ chmod +x ./kubectl  
+	$ mv kubectl /bin   
+	$ kubectl version --output=yaml
+
+## Installing  eksctl
+
+	$ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+	$ cd /tmp
+	$ sudo mv /tmp/eksctl /bin
+	$ eksctl version
+
+## Assign IAM Role to eksctl instance
+
+Create IAM Role for eksctl instance
+
+	Trusted Entity - EC2
+	Permission - Administrator Access //For demo only
+	Create and assign this IAM role to eksctl instance
+
+## Setup Kubernetes using eksctl
+
+	$ cd ~
+	$ eksctl create cluster --name virtualtechbox-cluster \
+	--region ap-south-1 \
+	--node-type t2.small \
+	--nodes 3
+	It will take some times to launch completely
+	$ kubectl get nodes
 
 	
 	
