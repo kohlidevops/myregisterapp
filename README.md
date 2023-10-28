@@ -301,7 +301,43 @@ Create IAM Role for eksctl instance
 	It will take some times to launch completely
 	$ kubectl get nodes
 
-	
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/3e450154-d5b6-47d7-b485-808a5964804c)
+
+## ArgoCD Installation on EKS Cluster and Add EKS Cluster to ArgoCD
+### First, create a namespace
+	$ kubectl create namespace argocd
+
+### Next, let's apply the yaml configuration files for ArgoCd
+	$ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+### Now we can view the pods created in the ArgoCD namespace.
+	$ kubectl get pods -n argocd
+
+### To interact with the API Server we need to deploy the CLI:
+	$ curl --silent --location -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.4.7/argocd-linux-amd64
+	$ chmod +x /usr/local/bin/argocd
+
+### Expose argocd-server
+	$ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+	$ kubectl get svc -n argocd
+ 
+#### Have to use the below loadbalancer URL to access the ArgoCD
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/35c2c920-fb2f-46e7-b221-a3fbe1ad66e9)
+
+## To decode the pasword
+    $ kubectl get secret argocd-initial-admin-secret -n argocd -o yaml
+    $ echo WXVpLUg2LWxoWjRkSHFmSA== | base64 --decode
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/e61ff644-dee0-4bc4-8e7c-fb600108b763)
+
+## To update the ArgoCD password
+
+Select -> User Info -> To update the password
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/e59b0aab-717d-4753-8d09-337d65b6f279)
+
+
 	
  
 
