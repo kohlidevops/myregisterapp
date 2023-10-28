@@ -93,9 +93,17 @@ Configure Java and Maven in Tools
 Create a Personal Access Token in GitHub that is your source code repository
 
  	Settings - Developer settings - Tokens(Classic) - Generate new token
+  	Copy the Token to configure GitHub credentials in next step.
 
 Configure GitHub credentials in Jenkins
 
+ 	Jenkins - Manage Jenkins - Credentials - System - Global credentials
+  	Add - Username with password
+   	username - kohlidevops
+    	password - GitHub Personal Access Token - which was created in last step
+     	ID - github
+      	create a credential
+       
  	
 
 
