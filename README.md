@@ -469,17 +469,23 @@ Then add below variables in MyJenkinsFile Environment section
 
 Jenkins -> New Item with Pipeline
 
-Select - This project is parameterized
-Name - IMAGE_TAG
-//Because Everytime my CD project will change the Image Tag in manifest file of Kubernetes repository in GitHub
-Build Triggers - Triggers build remotely
-Authentication Token - CD-Token
-Pipeline - Definition - Pipeline script from SCM
-SCM - Git
-Repository URL - https://github.com/kohlidevops/gitops-register-app
-Credentials - <Select>
-Branch specifier - */main
-Script path - Jenkinsfile
+	Select - This project is parameterized
+	Name - IMAGE_TAG
+	//Because Everytime my CD project will change the Image Tag in manifest file of Kubernetes repository in GitHub
+	Build Triggers - Triggers build remotely
+	Authentication Token - CD-Token
+	Pipeline - Definition - Pipeline script from SCM
+	SCM - Git
+	Repository URL - https://github.com/kohlidevops/gitops-register-app
+	Credentials - <Select>
+	Branch specifier - */main
+	Script path - Jenkinsfile
+
+ I have update a Jenkinsfile for Kubernetes repository, which is going to perform Git Checkout, updating IMAGE_TAG in deployment yaml file and finally update this file to the kubernetes repository.
+
+	https://github.com/kohlidevops/gitops-register-app/blob/main/Jenkinsfile
+
+ The "IMAGE_TAG" value has been passed with the help of final stage of CI job and the Environment section. 
 
 
 
