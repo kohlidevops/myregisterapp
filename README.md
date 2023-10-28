@@ -81,14 +81,14 @@ Install plugins in Jenkins
    	Eclipse Temurin installer
 
 Configure Java and Maven in Tools
-
- 	JDK Installations
+	
+	JDK Installations
 	Name -  Java17
- 	Install automatically - Install from adoptium.net - Version - jdk-17.0.5+8
+	Install automatically - Install from adoptium.net - Version - jdk-17.0.5+8
 
 	Maven Installations
-   	Name - Maven3
-    	Install automatically - Version - 3.9.4
+	Name - Maven3
+	Install automatically - Version - 3.9.4
 
 Create a Personal Access Token in GitHub that is your source code repository
 
@@ -97,12 +97,12 @@ Create a Personal Access Token in GitHub that is your source code repository
 
 Configure GitHub credentials in Jenkins
 
- 	Jenkins - Manage Jenkins - Credentials - System - Global credentials
-  	Add - Username with password
-   	username - kohlidevops
-    	password - GitHub Personal Access Token - which was created in last step
-     	ID - github
-      	create a credential
+	Jenkins - Manage Jenkins - Credentials - System - Global credentials
+	Add - Username with password
+	username - kohlidevops
+	password - GitHub Personal Access Token - which was created in last step
+	ID - github
+	create a credential
        
  	
 
