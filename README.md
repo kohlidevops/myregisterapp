@@ -276,7 +276,7 @@ Perfect! My Jenkins job build has been succeded. Now, Our Continuous Integration
 	$ mv kubectl /bin   
 	$ kubectl version --output=yaml
 
-## Installing  eksctl
+## Set up Kubernetes using eksctl
 
 	$ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 	$ cd /tmp
