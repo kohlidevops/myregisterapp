@@ -337,15 +337,149 @@ Select -> User Info -> To update the password
 
 ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/e59b0aab-717d-4753-8d09-337d65b6f279)
 
+## To Add EKS Cluster to ArgoCD
 
-	
+Firstly We have to login to ArgoCD from EKS Cluster through CLI
+
+	$ argocd login a2255bb2bb33f438d9addf8840d294c5-785887595.ap-south-1.elb.amazonaws.com --username admin
+
+ ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/f7bd9860-210d-4ea7-9296-ac8fee3d1a63)
+
+## To list the ArgoCD Cluster
+
+	$ argocd cluster list
+
+ As of now, we have default cluster, which is also shown in below image.
+
+ ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/7220120e-b389-472c-871c-2a512c29437b)
+
+We have to add the EKS Cluster to the ArgoCD.
+
+## To Show EKS Cluster
+
+	$ kubectl config get-contexts
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/dce961c4-d0c9-49ff-9e6b-b7ea7fd03149)
+
+## To add the EKS Cluster to the ArgoCD using below command
+
+	$ argocd cluster add i-0be779215a465a500@myapp-cluster.ap-south-1.eksctl.io --name myapp-eks-cluster
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/a99d3336-28fe-4ea4-854b-2bf2d265bf27)
+
+ Myapp-cluster has been added to ArgoCD Cluster.
+
+ ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/87525111-f4f3-4a90-a9bd-e31887864794)
+
+### This is one of my repository which is having manifest file for kubernetes. Now I would like to connect this repository to the ArgoCD cluster.
+
+ 	https://github.com/kohlidevops/gitops-register-app
+
+## Connect the repository from ArgoCD
+
+Navigate to ArgoCD console -> Settings -> repository -> Add repository
+
+	Connection method - Https
+	Type - Git
+	Project - Default
+	Repository URL - https://github.com/kohlidevops/gitops-register-app
+	Username - kohlidevops
+	Password - <Generated-Personal-Access-Token-in-Jenkins>
+	Then Connect
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/dd3309cf-df0e-40c8-b6b6-c9e7e19dffc9)
+
+Yes! Its connected successfully.
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/e25ffced-7b92-483d-a97e-be42d569b403)
+
+Just I had a look at the gitops repos for kubernetes to check the deployment-yaml file.
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/952c4080-29e6-4279-a274-0d09f8abb0da)
+
+Image ID and version should be match with the Docker hub.
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/201ed418-0797-4b63-b4c8-dd2e20eab3ae)
+
+## To add a app in ArgoCD
+
+Navigate to ArgoCD console -> Application -> New app
+
+	Application name - myapp
+	Project name - default
+	SYNC Policy - Automatic -> Select -> PRUNE Resources and SELF Heal
+	Source - Repository URL - https://github.com/kohlidevops/gitops-register-app
+	Revision - HEAD
+	Path - ./ 
+	Destination - <ArgoCD-Cluster-URL>
+	Namespace - default
+	Then Create
+
+ Perfect! My Application status has been Passed.
+
+ ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/303cbf4a-b620-48db-afb6-57e26c40c9cd)
+
+## If you execute the below command to see the number of Pods are running in the default namespace of my EKS Cluster
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/cb6fad8b-329b-4f85-87d2-cc063e7c3b84)
+
+## If you want to see the external DNS for default namespace
+
+	$ kubectl get svc
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/7b4d13cf-2bcb-4fff-ad53-edac9ded6392)
+
+## As of now, Deployment has been successful on Kubernetes
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/73c96656-6593-435c-8768-0cd7fb2ec55d)
+
+We have to automate this process hereafter to complete the task!
+
+## Create Jenkins API Token
+
+Jenkins -> Select your Admin user -> Configure -> Choose -> API Token -> Add new Token
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/4c47bc6b-bac2-4363-aa99-0001418758f2)
+
+Note the Token ID
+
+## Configure JENKINS_API_TOKEN in Jenkins credentials manager
+
+Jenkins -> Manage Jenkins -> Credentials -> System -> Global credentials -> Secret Text
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/5afbca70-af4b-4b9e-9a13-657359cff2d7)
+
+Then add below variables in MyJenkinsFile Environment section
+
+	JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
+	https://github.com/kohlidevops/myregisterapp/blob/master/MyJenkinsFile
+
+ ### Finally your ArgoCD stage should be updated
+
+	 stage("Trigger ArgoCD Pipeline") {
+	            steps {
+	                script {
+	                    sh "curl -v -k --user latchu:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-3-7-21-162.ap-south-1.compute.amazonaws.com:8080/job/gitops-register-app-cd/buildWithParameters?token=CD-Token'"
+	                }
+	            }
+	       }
+	Changes to be needed - Jenkins user, JENKINS_API_TOKEN, IMAGE_TAG, Jenkins Master EC2 DNS, and Token name
  
+## Create a new job for Continuous Deployment
 
+Jenkins -> New Item with Pipeline
 
-
- 
-       
- 	
+Select - This project is parameterized
+Name - IMAGE_TAG
+//Because Everytime my CD project will change the Image Tag in manifest file of Kubernetes repository in GitHub
+Build Triggers - Triggers build remotely
+Authentication Token - CD-Token
+Pipeline - Definition - Pipeline script from SCM
+SCM - Git
+Repository URL - https://github.com/kohlidevops/gitops-register-app
+Credentials - <Select>
+Branch specifier - */main
+Script path - Jenkinsfile
 
 
 
