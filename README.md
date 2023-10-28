@@ -209,8 +209,47 @@ Installed plugins are listed below
 
 ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/15ea4fe7-4d2f-4e30-b285-0b8d831bf2f8)
 
+## Build and Push Docker Image
+
+Firstly install Docker related plugins in Jenkins. Installed plugins are listed below.
+
+	Docker
+	Docker Commons
+	Docker Pipeline
+	Docker API
+	docker-build-step
+	CloudBees Docker Build and Publish
+	Docker Compose Build Step
+
+## Generate Temporary Access Token for Jenkins to access
+
+Navigate to hub.docker.com to login -> Select -> My account -> Security -> Generate Access Token
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/cf29771f-93a3-4c5d-9a0b-375498a1d3b2)
+
+## Configure Docker Access Token in Jenkins
+
+Jenkins -> Manage Jenkins -> Credentials -> System -> Global Credentials -> Add new
+
+	Select - Username with password
+	username - latchudevops
+	password - <Generated-Access-Token>
+	ID - dockerhub
+	Description - Dockerhub
+	save
+
+## Update the Jenkinsfile for Environment variables and Docker Build & Push
+
+	https://github.com/kohlidevops/myregisterapp/blob/master/MyJenkinsFile
+
+## Start the Jenkins Build
+
+Perfect! My Jenkins job build has been succeded with complete CI.
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/59ef5117-7e1e-426b-bdc2-e2275cdc7d57)
 
 
+	
 	
  
 
