@@ -244,9 +244,20 @@ Jenkins -> Manage Jenkins -> Credentials -> System -> Global Credentials -> Add 
 
 ## Start the Jenkins Build
 
-Perfect! My Jenkins job build has been succeded with complete CI.
+Perfect! My Jenkins job build has been succeded.
 
 ![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/59ef5117-7e1e-426b-bdc2-e2275cdc7d57)
+
+## Update the Jenkinsfile for scanning Docker image and Cleanup
+
+	https://github.com/kohlidevops/myregisterapp/blob/master/MyJenkinsFile
+
+## Start the Jenkins Build again
+
+Perfect! My Jenkins job build has been succeded. Now, Our Continuous Integration (CI) Job has been done.
+
+![image](https://github.com/kohlidevops/myregisterapp/assets/100069489/84ca2c1f-958b-45d9-a274-ad19b8cc382b)
+
 
 
 	
