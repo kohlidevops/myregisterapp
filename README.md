@@ -57,5 +57,22 @@ Launch EC2 Ubuntu22 with T2.Micro for Jenkins Agent
 
 To unlock Jenkins and create one admin user
 
+To make Jenkins Buildin Node as 0 and save it. Then create a new Node with Jenkins-Agent.
+
+	Name - Jenkins-Agent
+ 	Number of executors - 2
+  	Remote root directory - /home/ubuntu
+   	Labels - Jenkins-Agent
+    	Usage - Use this node as much as possible
+     	Launch method - Launch agents via ssh
+      	Host - Jenkins-Agent-Private-IP
+       	Credentials - Add Jenkins - To add Username with SSH Private key
+	Host key verification strategy - Non Verifying Verification Strategy
+ 	Availability - Keep this agent online as much as possible
+
+save and check the Jenkins-Agent logs in Jenkins console - Should be connected.
+
+To create a Test Jenkins pipeline with Hello world script to validate whether job is running without fail.
+
 
 
